@@ -1,0 +1,85 @@
+default:
+  image: hub.huarun.com/base/maven:3.6.3-jdk8-helm3
+
+stages:
+    - build
+    - deploy
+    - sonar
+
+build_release:
+  stage: build
+  before_script:
+    - mount -t nfs 10.132.122.66:/opt/gitlab_build_cache/.m2 ~/.m2
+  script:
+    - mvn versions:set -DoldVersion='*' -DnewVersion=${CI_COMMIT_REF_NAME}
+    - mvn clean deploy -Dmaven.test.skip=true
+    - mvn docker:build -DpushImage -DdockerImageTags=$CI_COMMIT_REF_NAME
+    - mvn versions:revert
+  after_script:
+    - umount ~/.m2
+  only:
+    - tags
+  tags:
+    - dev
+
+build_snapshot:
+  stage: build
+  before_script:
+    - mount -t nfs 10.132.122.66:/opt/gitlab_build_cache/.m2 ~/.m2
+  script:
+    - mvn versions:set -DoldVersion='*' -DnewVersion=${CI_COMMIT_REF_NAME}-SNAPSHOT
+    - mvn clean deploy -Dmaven.test.skip=true
+    - mvn docker:build -DpushImage -DdockerImageTags=$CI_COMMIT_REF_NAME
+    - mvn versions:revert
+  after_script:
+    - umount ~/.m2
+  only:
+    - master
+    - develop
+    - /(feature\-)+.*$/
+    - /^\d+\-.+$/
+  tags:
+    - dev
+
+
+deploy_to_k8s:
+  stage: deploy
+  image: hub.huarun.com/base/kube-deploy:beta
+  variables:
+    GIT_STRATEGY: none                   # 定义此参数时，Runner不会拉取代码，因为部署阶段只是控制K8S进行操作，因此无需拉取仓库代码。
+    # 部署时，需要使用的环境变量，在这里定义。在下面的部署脚本中引用，可以定义N个。
+    TZ: "Asia/Shanghai"
+    SERVER_PORT: 80
+  before_script:
+    # KUBE_CONF变量的值是在项目内或项目组里预先定义的文件类型变量，用于生成K8S的配置文件，根据需要部署应用到哪个集群，打开或者注释下面的语句.
+    - cat ${KUBE_HR_CONF} > ~/.kube/config
+  script:
+    # 在实际配置当中，请去掉换行斜杠后的注释以及空格或者tab，否则脚本可能解析参数会导致错误。
+    - |
+      /root/.kube/kube-deploy.py --app_name email-service \
+                                 --group_name ${CI_PROJECT_NAMESPACE} \
+                                 --branch_name ${CI_BUILD_REF_NAME} \
+                                 --container_port 8080 \
+                                 --cluster_name local \
+                                 --kube_namespace dev \
+                                 --dry-run false \
+                                 --logtype java  \
+                                 --image_name hub.huarun.com/common/email-service:${CI_BUILD_REF_NAME}
+
+    - echo "deploy success."
+  only:
+    - develop
+
+.sonar:
+  stage: sonar
+  script:
+    - mvn org.jacoco:jacoco-maven-plugin:prepare-agent clean install -Dmaven.test.failure.ignore=true && mvn sonar:sonar
+  only:
+    refs:
+      - master
+      - develop
+      - /(feature\-)+.*$/
+    variables:
+      - $SONAR_STAGE == "true"
+  tags:
+    - dev

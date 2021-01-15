@@ -1,0 +1,8 @@
+/target/
+/bin/
+.project
+/.settings/
+.classpath
+logs
+email-service.iml
+/.idea
