@@ -1,0 +1,77 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@10.132.122.216:1521/coitdb
+    username: csuat
+    password: Csuat#2020
+    druid:
+      max-active: 8
+      min-idle: 2
+      test-while-idle: true
+      time-between-eviction-runs-millis: 900000
+      validation-query: select 1 from dual
+#  quartz:
+#    cron:
+#      update-privilege-job: 0/5 * * * * ?
+#      session-clear-job: 0/5 * * * * ?
+#      update-user-notice-job: 0/5 * * * * ?
+
+  cloud:
+    stream:
+      bindings:
+        message_center_out:
+          destination: email-service_out_uat
+          content-type: application/json
+        message_center_in:
+          destination: email-service_out_uat
+          content-type: application/json
+          group: email-service-uat
+      kafka:
+        binder:
+          brokers: 10.132.122.243:9092
+quantex:
+  application:
+    name: email-service
+    jwt-secret: quantex
+#  redis:
+#    configs:
+#      web:
+#        host: 10.116.18.151
+#        port: 6379
+#        database: 10
+#  eventbus:
+#    host: 10.116.18.151
+#    port: 5672
+#    username: eventuser
+#    password: "@event2016"
+#    virtual-host: /eventbustest
+  mybatis:
+    mapper-locations:
+#    - classpath:com/iquantex/web/framework/dao/basexml/*.xml
+#    - classpath:com/iquantex/web/framework/dao/xml/*.xml
+#    - classpath:com/iquantex/msgcenter/dao/basexml/*.xml
+    type-aliases-packages:
+#    - com.iquantex.web.framework.model
+#    - com.iquantex.msgcenter.model
+    base-packages:
+#    - com.iquantex.web.framework.dao.java
+#    - com.iquantex.msgcenter.dao.java
+    properties:
+      ORDER: BEFORE
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka.uat.boi.crctrust.com/eureka/
+    registry-fetch-interval-seconds: 10
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health
+    prefer-ip-address: true
+    hostname: email-service
+    metadata-map:
+      management:
+        context-path: ${server.servlet.context-path}/actuator
