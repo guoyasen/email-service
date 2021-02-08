@@ -29,7 +29,7 @@ public class YbKafkaConsumer {
     /**
      * 监听一个Kafka 主题
      **/
-    @KafkaListener(topics = MQConstants.Topic.ITEM_EXCHANGE_NAME)
+    @KafkaListener(topics = {"#{'${spring.kafka.consumer.topic}'.split(',')}"})
     public void receiveMessageFromKafka(ConsumerRecord<?, ?> record, Acknowledgment ack) {
         log.info("监听消息,MailUid:{}", JSONObject.parseObject(String.valueOf(record.value()), EmailEvent.class).getMailId());
 
