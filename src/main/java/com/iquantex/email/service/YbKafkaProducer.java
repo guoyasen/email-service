@@ -8,6 +8,7 @@ import com.iquantex.event.email.EmailEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,11 @@ public class YbKafkaProducer {
     private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     private KafkaConfig kafkaConfig;
+    @Value("${spring.kafka.consumer.topic}")
+    private String topicName;
 
     private Producer<String, Object> producer;
 
-    private String topicName = MQConstants.Topic.ITEM_EXCHANGE_NAME;
 
     /******** method ***********************/
     /**
