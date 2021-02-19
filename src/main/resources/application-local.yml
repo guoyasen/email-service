@@ -145,3 +145,7 @@ async:
       name:
         prefix: async-service-
         prefixson: async-service-son
+
+mail:
+  mime:
+    splitlongparameters: false
