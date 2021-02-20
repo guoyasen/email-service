@@ -24,6 +24,9 @@ public class EmailServiceConfig {
     @Value("${spring.mail.password}")
     private String password;
 
+    @Value("${mail.mime.splitlongparameters:false}")
+    private String splitlongparameters;
+
     private static String gHost;
 
     private static Integer gPort;
@@ -38,6 +41,7 @@ public class EmailServiceConfig {
         setgPort(port);
         setgUsername(username);
         setgPassword(password);
+        System.setProperty("mail.mime.splitlongparameters", splitlongparameters);
     }
 
     public static String getgHost() {
