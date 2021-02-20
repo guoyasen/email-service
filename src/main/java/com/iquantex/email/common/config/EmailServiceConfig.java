@@ -41,7 +41,6 @@ public class EmailServiceConfig {
         setgPort(port);
         setgUsername(username);
         setgPassword(password);
-        System.out.println("====test splitlongparameters==== " + splitlongparameters);
         System.setProperty("mail.mime.splitlongparameters", splitlongparameters);
     }
 
