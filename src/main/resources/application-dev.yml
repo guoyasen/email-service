@@ -28,7 +28,7 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer #value解码方式
       group-id: kafka.consumer.group.id.1
       max-poll-records: 50
-      topic: boi_inst_instruction_email
+      topic: boi_inst_instruction_email_test
       properties:
         session-timeout-ms: 20000 #连接超时时间
         max-poll-interval-ms: 15000 #手动提交设置与poll的心跳数,如果消息队列中没有消息，等待毫秒后，调用poll()方法。如果队列中有消息，立即消费消息，每次消费的消息的多少可以通过max.poll.records配置。
@@ -109,8 +109,8 @@ quantex:
 eureka:
   client:
     enabled: true
-    register-with-eureka: true
-    fetch-registry: true
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
       defaultZone: http://eureka.dev.boi.crctrust.com/eureka/
     registry-fetch-interval-seconds: 10
