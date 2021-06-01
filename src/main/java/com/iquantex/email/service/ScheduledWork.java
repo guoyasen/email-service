@@ -1,6 +1,7 @@
 package com.iquantex.email.service;
 
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.iquantex.email.dao.mapper.CsMailFileMapper;
 import com.iquantex.email.dao.mapper.CsMailInfoMapper;
@@ -29,7 +30,7 @@ public class ScheduledWork {
     private CsMailFileMapper csMailFileMapper;
 
 
-    /*@Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0/10 * * * * *")
     public void scheduled() throws ParseException {
 
         int num = new Random().nextInt(2) + 1;
@@ -48,11 +49,19 @@ public class ScheduledWork {
         emailEvent.setReceivers("yasen.guo@iquantex.cn");
 //            mailDTO.setPlanSendTime(parseDateStr("2019-07-26 16:50:52", "yyyy-MM-dd HH:mm:ss"));
         // 主题
-        emailEvent.setSubject("主题1");
-        // 测试正文
-        emailEvent.setContent("测试正文");
+        emailEvent.setSubject("测试邮件2021年2月25日");
 
-        File file = new File("test.txt");
+        Map<String, String> map = new HashMap<>();
+        map.put("sname", "邮件模板测试内容，测试时间2021年2月25日");
+        map.put("secClass1Value", "邮件模板测试主题，测试时间2021年2月25日");
+        map.put("subject", "测试邮件2021年2月25日");
+
+        // 测试正文
+        emailEvent.setContent(JSON.toJSONString(map));
+        emailEvent.setEmailCode("NS_ASSET_UPDATE");
+        emailEvent.setCcopys("yasen.guo@iquantex.cn,1121034610@qq.com");
+
+        /*File file = new File("test.txt");
 
         List<File> files = new ArrayList<>();
         BufferedWriter out =null;
@@ -77,11 +86,11 @@ public class ScheduledWork {
         }
 
         files.add(file);
-        emailEvent.setFiles(files);
+        emailEvent.setFiles(files);*/
 
         ybKafkaProducer.sendToKafkaStandardMessageAsync(emailEvent);
 
-    }*/
+    }
 
     public static Date parseDateStr(String dateStr, String simpleDataType) throws ParseException {
         DateFormat format = new SimpleDateFormat(simpleDataType);

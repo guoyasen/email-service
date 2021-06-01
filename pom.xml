@@ -15,6 +15,7 @@
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <sba.version>2.1.6</sba.version>
         <mybatis-plus.version>3.3.1</mybatis-plus.version>
+        <swagger-ui.version>2.9.2</swagger-ui.version>
     </properties>
 
     <parent>
@@ -135,6 +136,29 @@
             <groupId>com.iquantex</groupId>
             <artifactId>quantex-event</artifactId>
             <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.30</version>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger-ui.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
     </dependencies>

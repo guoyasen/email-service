@@ -18,6 +18,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,7 +44,7 @@ public class MailHelper {
 
         String serverFrom = (String) mailSender.getJavaMailProperties().get("from");
 
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);//true表示支持复杂类型
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true, "UTF-8");//true表示支持复杂类型
         setMessagePro(emailEvent, serverFrom, messageHelper);
         //正式发送邮件
         mailSender.send(messageHelper.getMimeMessage());
@@ -59,7 +61,7 @@ public class MailHelper {
         messageHelper.setReplyTo(fromMail, emailEvent.getFromName());// 回信地址
         messageHelper.setTo(emailEvent.getReceivers().split(","));//邮件收信人
         messageHelper.setSubject(emailEvent.getSubject());//邮件主题
-        messageHelper.setText(emailEvent.getContent());//邮件内容
+        messageHelper.setText(emailEvent.getContent(), true);//邮件内容
         if (emailEvent.getFiles() != null && !emailEvent.getFiles().isEmpty()) {
             for (int i = 0; i < emailEvent.getFiles().size(); i++) {
                 byte[] file = emailEvent.getFiles().get(i);
